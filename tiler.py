@@ -64,4 +64,4 @@ class Tiler:
                         print("Getting {},{} from {},{} to {},{}".format(i,j,x,z,2*x+i,2*z+j))
                         tile.save(filename=dest)
 
-Tiler(path='day', zoomOut=0).execute()
+Tiler(path='day').execute()

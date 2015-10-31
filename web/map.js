@@ -1,5 +1,6 @@
       var zoomOut = 4;
       var zoomIn = 1;
+      var tilePath = '../day/';
 
       function CustomMapType() {
       }
@@ -9,7 +10,7 @@
 
       CustomMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
         var div = ownerDocument.createElement('DIV');
-        var baseURL = 'tiles/z' + (zoomOut+zoomIn-zoom) + '/';
+        var baseURL = tilePath + 'z' + (zoomOut-zoom) + '/';
         baseURL += coord.x + ',' + coord.y + '.png';
         div.style.width = this.tileSize.width + 'px';
         div.style.height = this.tileSize.height + 'px';
