@@ -1,6 +1,6 @@
       var zoomOut = 4;
       var zoomIn = 1;
-      var tilePath = '../day/';
+      var tilePath = 'tiles/';
 
       function CustomMapType() {
       }
