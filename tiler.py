@@ -118,5 +118,7 @@ def main():
         Tiler(**vars(args)).execute()
     except Exception as e:
         print("Error:",e)
+        if args.path == '.' and not os.path.isdir(args.path + '/z0'):
+            parser().print_help()
 
 main()
