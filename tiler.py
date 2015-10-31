@@ -3,7 +3,7 @@ import re
 import math
 import subprocess
 
-p = re.compile('^tile\.(-?[0-9]+)\.(-?[0-9]+)\.png$')
+p = re.compile('^(-?[0-9]+)\,(-?[0-9]+)\.png$')
 path = '.'
 
 def rescale(src, target):
@@ -19,8 +19,8 @@ def rescale(src, target):
       tcoords.add((math.floor(x/2), math.floor(z/2)))
       
   for i,j in tcoords:
-    pics = ['{src}/tile.{i}.{j}.png'.format(src=src,i=x,j=z) for x,z in ((i*2+(c&1), j*2+(c>>1)) for c in range(4))]
-    t = '{target}/tile.{i}.{j}.png'.format(target=target, i=i, j=j)
+    pics = ['{src}/{i},{j}.png'.format(src=src,i=x,j=z) for x,z in ((i*2+(c&1), j*2+(c>>1)) for c in range(4))]
+    t = '{target}/{i},{j}.png'.format(target=target, i=i, j=j)
     if os.path.isfile(t):
       newest_tile = max([os.path.getmtime(pic) if os.path.isfile(pic) else 0 for pic in pics])
       if newest_tile <= os.path.getmtime(t):
@@ -33,7 +33,7 @@ def rescale(src, target):
 parent = '.'
 src = parent
 
-for i in range(1,7):
+for i in range(7):
   next = parent + ('/z%d' % i)
   print("Scaling down by 2^%d" % i)
   rescale(src, next)
