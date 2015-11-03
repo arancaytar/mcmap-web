@@ -30,13 +30,31 @@
         }
       });
       mcMapType.projection = {
+        scale: 4096,
         fromLatLngToPoint: function(ll) {
-          return new google.maps.Point(ll.lng(),ll.lat());
+          return new google.maps.Point(ll.lng()*this.scale,ll.lat()*this.scale);
         },
         fromPointToLatLng: function(p) {
-          return new google.maps.LatLng(p.y, p.x);
+          return new google.maps.LatLng(p.y/this.scale, p.x/this.scale);
         }
       };
+
+      util = {
+        scale: 4096*(1<<zoomOut),
+        fromLatLngToPoint: function(ll) {
+          return new google.maps.Point(ll.lng()*this.scale,ll.lat()*this.scale);
+        },
+        fromPointToLatLng: function(p) {
+          return new google.maps.LatLng(p.y/this.scale, p.x/this.scale);
+        },
+        distance: function(px) {
+          return google.maps.geometry.spherical.computeDistanceBetween(
+            this.fromPointToLatLng({x:0,y:0}), this.fromPointToLatLng({x:px,y:0})
+          );
+        }
+      };
+
+      console.log(mcMapType.projection.scale);
       CustomMapType.prototype.maxZoom = zoomOut+zoomIn;
 
       CustomMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
