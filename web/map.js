@@ -1,11 +1,42 @@
       var zoomOut = 4;
       var zoomIn = 1;
-      var tilePath = 'tiles/';
+      var tilePath = 'surface/';
 
       function CustomMapType() {
       }
 
-      CustomMapType.prototype.tileSize = new google.maps.Size(512,512);
+      mcMapType = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+          // Our scale starts at 2x2, because centering on 0,0 means we always get four tiles.
+          var scale = 1 << zoom;
+          // Always stay inside the bounding box.
+          if (coord.x < -scale || coord.y < -scale || coord.x >= scale || coord.y >= scale) return null;
+          console.log(tilePath + '/z' + (zoomOut-zoom) + '/' + (coord.x) + ',' + (coord.y) + '.png');
+          return tilePath + '/z' + (zoomOut-zoom) + '/' + (coord.x) + ',' + (coord.y) + '.png';
+        },
+        tileSize: new google.maps.Size(512,512),
+        isPng: true,
+        minZoom: 0,
+        maxZoom: zoomIn+zoomOut,
+        name: 'Minecraft',
+        getTile: function (coord, zoom) {
+          var div = ownerDocument.createElement('DIV');
+          var url = this.getTileUrl(coord, zoom);
+          div.style.width = this.tileSize.width + 'px';
+          div.style.height = this.tileSize.height + 'px';
+          div.style.backgroundColor = '#1B2D33';
+          div.style.backgroundImage = 'url(' + url + ')';
+          return div;
+        }
+      });
+      mcMapType.projection = {
+        fromLatLngToPoint: function(ll) {
+          return new google.maps.Point(ll.lng(),ll.lat());
+        },
+        fromPointToLatLng: function(p) {
+          return new google.maps.LatLng(p.y, p.x);
+        }
+      };
       CustomMapType.prototype.maxZoom = zoomOut+zoomIn;
 
       CustomMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
@@ -23,15 +54,13 @@
       var map;
       var CustomMapType = new CustomMapType();
 
-
       function initialize() {
         var mapOptions = {
-          minZoom: 0,
-          maxZoom: zoomIn+zoomOut,
+
           isPng: true,
           mapTypeControl: false,
           streetViewControl: false,      /* stupid Google thinks the world is a sphere. */
-          center: new google.maps.LatLng(85,-180),
+          center: new google.maps.LatLng(0,0),
           zoom: zoomOut,
           mapTypeControlOptions: {
             mapTypeIds: ['custom', google.maps.MapTypeId.ROADMAP],
@@ -39,6 +68,6 @@
           }
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-        map.mapTypes.set('custom',CustomMapType);
-        map.setMapTypeId('custom');
+        map.mapTypes.set('minecraft',mcMapType);
+        map.setMapTypeId('minecraft');
       }
