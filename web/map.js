@@ -88,4 +88,13 @@
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
         map.mapTypes.set('minecraft',mcMapType);
         map.setMapTypeId('minecraft');
+new google.maps.Circle({
+      center: util.fromPointToLatLng({y:256, x:0}),
+      radius: util.distance(1000),
+      strokeColor: '#FF0000',
+      strokeWeight: 5,
+      strokeOpacity: 0.35
+    }).setMap(map);
       }
+
+
